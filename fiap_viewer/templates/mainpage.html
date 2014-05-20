@@ -1,0 +1,27 @@
+<!DOCTYPE HTML>
+<!--
+  templates/mainpage.html
+
+  Author:   Hiromasa Ihara (miettal)
+  URL:      http://miettal.com
+  License:  MIT License
+  Created:  2014-05-19
+-->
+{% extends "base_layout.html" %}
+
+{% block title %}
+Main page:
+{% endblock %}
+
+{% block body %}
+ポイントID一覧（クリックするとグラフが表示されます）
+<ul>
+{% for point_id in point_ids %}
+  <li><a href="/PointID/{{ point_id.point_id}}">{{ point_id.name}}</a>
+{% if point_id.about is not none %}
+ - {{ point_id.about }}
+{% endif %}
+</li>
+{% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,101 @@
+<!DOCTYPE HTML>
+<!--
+  templates/pointidpage.html
+
+  Author:   Hiromasa Ihara (miettal)
+  URL:      http://miettal.com
+  License:  MIT License
+  Created:  2014-05-19
+-->
+{% extends "base_layout.html" %}
+
+{% block title %}
+{{ point_id.name }}
+{% endblock %}
+
+{% block body %}
+{{ point_id.name }}
+{% if point_id.about is not none %}
+ - {{ point_id.about }}
+{% endif %}
+<div id="chart"></div>
+{% endblock %}
+
+{% block js %}
+<script>
+$(function(){
+  //var start = moment().startOf('day');
+  //var end = moment().startOf('day').add('days', 1);
+  var start = moment().startOf('day').subtract('days', 1);
+  var end = moment().startOf('day')
+  
+  var chart = new Highcharts.Chart({
+    chart:{
+      renderTo: "chart",
+      type: "line",
+      zoomType: "x",
+    },
+    title:{
+      text:"{{ point_id.name }}",
+    },
+    subtitle:{
+      text:"{{point_id.point_id }}",
+    },
+    plotOptions:{
+      line: {
+        turboThreshold:0,
+      },
+    },
+    xAxis: {
+      title: {
+        text: 'time',
+      },
+      type: 'datetime',
+      dateTimeLabelFormats:{
+        millisecond: '%H:%M:%S.%L',
+        second: '%H:%M:%S',
+        minute: '%H:%M',
+        hour: '%H:%M',
+        day: '%m/%d %H:%M',
+        week: '%m/%d',
+        month: '%y %m',
+        year: '%Y'
+      }
+    },
+    yAxis: {
+      title: {
+        text: "value",
+      },
+    },
+    series:[{
+      name: "{{ point_id.name }}",
+      data:[],
+    }],
+    tooltip: {
+      formatter: function() {
+        return Highcharts.dateFormat('%Y/%m/%d %H:%M:%S', this.x)+':'+this.y;
+      },
+    },
+  });
+  $.ajax({
+    url:'/FIAPGW',
+    data: {
+      point_ids:"{{ point_id.point_id }}",
+      start:start.format(),
+      end:end.format(),
+    },
+    success:function(data, dataType){
+      var series_data = []
+      $.each(data.result, function(i, v){
+        series_data.push({
+          y:parseFloat(v.value),
+          x:(new Date(v.time)).getTime(),
+        });
+      });
+      console.log(series_data);
+      chart.series[0].setData(series_data);
+    },
+  });
+});
+</script>
+{% endblock %}
