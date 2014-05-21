@@ -9,5 +9,4 @@
 # Created:  2014-05-19
 #
 
-wsdl_url = "http://fiap-dev.gutp.ic.i.u-tokyo.ac.jp/axis2/services/FIAPStorage?wsdl"
-database_url = 'sqlite:////tmp/test.db'
+wsdl_url = "http://202.15.110.21/axis2/services/FIAPStorage?wsdl"

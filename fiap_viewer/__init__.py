@@ -14,9 +14,14 @@ from flask.ext.sqlalchemy import SQLAlchemy
 
 import fiap_viewer.config
 
-#flask app
+import sys
+import os
+
+directory = os.path.abspath(os.path.dirname(__file__))
+database_url = 'sqlite:///'+directory+'/db/fiap_viewer.db'
+
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = fiap_viewer.config
+app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 db = SQLAlchemy(app)
 
 import fiap_viewer.view

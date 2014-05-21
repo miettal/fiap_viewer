@@ -15,6 +15,9 @@
 templates/base_layout
 {% endblock %}
 </title>
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+<script src="{{ url_for('static', filename='js/daterangepicker.js') }}"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/daterangepicker-bs3.css') }}">
 </head>
 <body>
 <h1><a href="/">トップに戻る</a></h1>
@@ -23,9 +26,11 @@ templates/base_layout
 {% endblock %}
 <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
 <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.6.0/moment.min.js"></script>
 <script src="//code.highcharts.com/highcharts.js"></script>
 <script src="//code.highcharts.com/modules/exporting.js"></script>
+<script src="{{ url_for('static', filename='js/daterangepicker.js') }}"></script>
 {% block js %}
 {% endblock %}
 </body>

@@ -14,21 +14,47 @@
 {% endblock %}
 
 {% block body %}
+<h2>
 {{ point_id.name }}
 {% if point_id.about is not none %}
  - {{ point_id.about }}
 {% endif %}
+</h2>
+<div>
+<input id="daterange" style="width: 300px" type="text">
+</div>
 <div id="chart"></div>
 {% endblock %}
 
 {% block js %}
 <script>
 $(function(){
-  //var start = moment().startOf('day');
-  //var end = moment().startOf('day').add('days', 1);
-  var start = moment().startOf('day').subtract('days', 1);
-  var end = moment().startOf('day')
+  var start = moment().startOf('day');
+  var end = moment().startOf('day').add('days', 1);
   
+  //日付入力
+  $('#daterange').daterangepicker({
+      timePicker: true,
+      dateLimit:moment.duration(7, 'days'),
+      timePicker12Hour:false,
+      timePickerIncrement:1,
+      startDate:moment().startOf('day'),
+      endDate:moment().add('days', 1).startOf('day'),
+      format:'YYYY/MM/DD HH:mm',
+      showDropdowns: false,
+    },
+    function(s, e){
+      if(s.diff(this.start) === 0 && e.diff(this.end) === 0) {
+        return;
+      }
+      start = moment(s);
+      end = moment(e);
+
+      update();
+    }
+  );
+  $('#daterange').data('daterangepicker').updateInputText();
+
   var chart = new Highcharts.Chart({
     chart:{
       renderTo: "chart",
@@ -77,25 +103,34 @@ $(function(){
       },
     },
   });
-  $.ajax({
-    url:'/FIAPGW',
-    data: {
-      point_ids:"{{ point_id.point_id }}",
-      start:start.format(),
-      end:end.format(),
-    },
-    success:function(data, dataType){
-      var series_data = []
-      $.each(data.result, function(i, v){
-        series_data.push({
-          y:parseFloat(v.value),
-          x:(new Date(v.time)).getTime(),
+  function update(){
+    {% if point_id.about is not none %}
+    chart.setTitle({text:"{{ point_id.name}} - {{ point_id.about }}"}, {text:"["+$("#daterange").val()+"] {{point_id.point_id }}"});
+    {% else %}
+    chart.setTitle({text:"{{ point_id.name}}"}, {text:"["+$("#daterange").val()+"] {{point_id.point_id }}"});
+    {% endif %}
+ 
+    $.ajax({
+      url:'/FIAPGW',
+      data: {
+        point_ids:"{{ point_id.point_id }}",
+        start:start.format(),
+        end:end.format(),
+      },
+      success:function(data, dataType){
+        var series_data = []
+        $.each(data.result, function(i, v){
+          series_data.push({
+            y:parseFloat(v.value),
+            x:(new Date(v.time)).getTime(),
+          });
         });
-      });
-      console.log(series_data);
-      chart.series[0].setData(series_data);
-    },
-  });
+        console.log(series_data);
+        chart.series[0].setData(series_data);
+      },
+    });
+  }
+  update();
 });
 </script>
 {% endblock %}

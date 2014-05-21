@@ -18,13 +18,14 @@ from flask.ext.admin.contrib.sqla import ModelView
 
 from datetime import datetime, timedelta
 from pytz import timezone
+import re
 
 from pyfiap.fiap import APP
 
 fiap_app = APP(wsdl_url)
 
 @app.route('/')
-def index():
+def index_page():
   point_ids = PointID.query.all()
   
   now = datetime.now()
@@ -32,7 +33,8 @@ def index():
     point_ids = point_ids)
 
 @app.route('/PointID/<path:point_id_>')
-def point_id(point_id_):
+def point_id_page(point_id_):
+  point_id_ = re.sub("^http:/(?P<ch>[^/])", "http://\g<ch>", point_id_)
   point_id = PointID.query.filter_by(point_id=point_id_).first()
   return render_template("pointidpage.html",
     point_id = point_id)
