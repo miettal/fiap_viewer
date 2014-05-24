@@ -18,7 +18,7 @@ import sys
 import os
 
 directory = os.path.abspath(os.path.dirname(__file__))
-database_url = 'sqlite:///'+directory+'/db/fiap_viewer.db'
+database_url = 'sqlite:///'+directory+'/fiap_viewer.db'
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
